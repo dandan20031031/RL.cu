@@ -54,7 +54,7 @@ model headers:
 ```bash
 cmake -S . -B build/cpu -DRL_CU_BUILD_CUDA=OFF
 cmake --build build/cpu
-ctest --test-dir build/cpu --output-on-failure
+cmake -E chdir build/cpu ctest --output-on-failure
 # Equivalent: make test_cpu
 ```
 
@@ -63,7 +63,7 @@ Run the migrated CPU and CUDA suites (requires a CUDA toolkit and GPU):
 ```bash
 cmake -S . -B build -DCMAKE_CUDA_ARCHITECTURES=120  # use your GPU architecture
 cmake --build build --target test_lr_scheduler test_rmsnorm
-ctest --test-dir build -R 'LRSchedulerTest|RMSNormTest' --output-on-failure
+cmake -E chdir build ctest -R 'LRSchedulerTest|RMSNormTest' --output-on-failure
 ./build/test_rmsnorm --gtest_filter='*ZeroInput*'
 ./build/test_rmsnorm --benchmark  # opt-in timing after correctness checks
 ```
@@ -76,8 +76,8 @@ the weights and other dependencies described in the root README. GPU tests
 share a CTest resource lock to avoid concurrent GPU workloads.
 
 After building all targets, select existing suites with
-`ctest --test-dir build -L kernel --output-on-failure` or run all registered
-tests with `ctest --test-dir build --output-on-failure`.
+`cmake -E chdir build ctest -L kernel --output-on-failure` or run all registered
+tests with `cmake -E chdir build ctest --output-on-failure`.
 Use `-DBUILD_TESTING=OFF` to build the training binaries without test targets or
 the GoogleTest dependency. This is an initial migration; the remaining standalone
 tests can be converted incrementally.

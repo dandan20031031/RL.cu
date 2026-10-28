@@ -78,7 +78,7 @@ test_kernels: $(KERNEL_TESTS) $(BACKWARD_TESTS)
 test_cpu:
 	cmake -S . -B $(BUILDDIR)/cpu -DRL_CU_BUILD_CUDA=OFF -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 	cmake --build $(BUILDDIR)/cpu -j$(NPROC)
-	ctest --test-dir $(BUILDDIR)/cpu --output-on-failure
+	cmake -E chdir $(BUILDDIR)/cpu ctest --output-on-failure
 
 test_python:
 	$(PYTHON) -m pytest
